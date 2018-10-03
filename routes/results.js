@@ -3,7 +3,7 @@ const router = express.Router();
 const { Result, validateResult } = require('../models/result');
 const auth = require('../middleware/auth');
 const validate = require('../middleware/validate');
-const validateObjectId = require('../middleware/validateObjectid');
+const validateObjectId = require('../middleware/validateObjectId');
 const calculateKPIs = require('../middleware/results/calculateKPIs');
 const addMetainfos = require('../middleware/results/addMetainfos');
 

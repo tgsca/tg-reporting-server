@@ -3,7 +3,7 @@ const router = express.Router();
 const { Cycle, validateCycle } = require('../models/cycle');
 const auth = require('../middleware/auth');
 const validate = require('../middleware/validate');
-const validateObjectId = require('../middleware/validateObjectid');
+const validateObjectId = require('../middleware/validateObjectId');
 const addMetainfos = require('../middleware/cycles/addMetainfos');
 
 router.get('/', async (req, res) => {

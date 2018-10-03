@@ -3,7 +3,7 @@ const router = express.Router();
 const { Project, validateProject } = require('../models/project');
 const auth = require('../middleware/auth');
 const validate = require('../middleware/validate');
-const validateObjectId = require('../middleware/validateObjectid');
+const validateObjectId = require('../middleware/validateObjectId');
 
 router.get('/', async (req, res) => {
 	const projects = await Project.find();
