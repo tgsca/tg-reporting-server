@@ -1,0 +1,4 @@
+{
+	"jwtPrivateKey": "tg_jwtPrivateKey",
+	"db": "tg_tgReportingServerDb"
+}
