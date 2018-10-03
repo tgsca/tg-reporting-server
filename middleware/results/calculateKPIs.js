@@ -19,12 +19,12 @@ module.exports = async (req, res, next) => {
 	 * Prepare Time KPIs
 	 */
 	const cycle = await Cycle.findById(req.body.cycle._id);
-	const now = new moment();
+	const current = (req.body.reportingDate) ? new moment(req.body.reportingDate) : new moment();
 	const start = new moment(cycle.startDate);
 	const end = new moment(cycle.endDate);
 	const cycleDuration = moment.duration(start.diff(end));
-	const elapsedDuration = (start < now) ? moment.duration(start.diff(now)) : 0;
-	const availableDuration = (now < end) ? moment.duration(now.diff(end)) : 0;
+	const elapsedDuration = (start < current) ? moment.duration(start.diff(current)) : 0;
+	const availableDuration = (current < end) ? moment.duration(current.diff(end)) : 0;
 
 	/**
 	 * Add SUM
