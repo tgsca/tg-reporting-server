@@ -9,8 +9,7 @@ const resultSchema = new mongoose.Schema({
 				required: true
 			},
 			version: {
-				type: String,
-				required: true
+				type: String
 			},
 			project: {
 				type: new mongoose.Schema({

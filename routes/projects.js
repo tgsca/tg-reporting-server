@@ -34,6 +34,7 @@ router.put('/:id', [auth, validateObjectId, validate(validateProject)], async (r
 	res.send(project);
 });
 
+// TODO: delete assigned cycles and results as well
 router.delete('/:id', [auth, validateObjectId], async (req, res) => {
 	const project = await Project.findByIdAndRemove(req.params.id);
 	if (!project) return res.status(404).send(`Project with given ID ${req.params.id} could not be found.`);

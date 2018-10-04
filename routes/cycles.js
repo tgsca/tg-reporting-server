@@ -25,6 +25,7 @@ router.get('/:id', validateObjectId, async (req, res) => {
 	res.send(cycle);	
 });
 
+// TODO: if startDate or endDate updated, then recalculate KPIs of the assigned results
 router.put('/:id', [auth, validateObjectId, validate(validateCycle), addMetainfos], async (req, res) => {
 	const cycle = await Cycle.findByIdAndUpdate(req.params.id, req.body, { new: true });
 	if (!cycle) return res.status(404).send(`Cycle with given ID ${req.params.id} could not be found.`);
@@ -32,6 +33,7 @@ router.put('/:id', [auth, validateObjectId, validate(validateCycle), addMetainfo
 	res.send(cycle);
 });
 
+// TODO: delete assigned results as well
 router.delete('/:id', [auth, validateObjectId], async (req, res) => {
 	const cycle = await Cycle.findByIdAndRemove(req.params.id);
 	if (!cycle) return res.status(404).send(`Cycle with given ID ${req.params.id} could not be found.`);
