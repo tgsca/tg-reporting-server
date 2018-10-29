@@ -1,48 +1,39 @@
 const { Cycle } = require('../../models/cycle');
-const moment = require('moment');
+const kpi = require('../../services/kpiService');
 
 module.exports = async (req, res, next) => {
-	/**
-	 * Prepare Count KPIs
-	 */
-	const passed = (req.body.passed) ? req.body.passed : 0;
-	const failed = (req.body.failed) ? req.body.failed : 0;
-	const notCompleted = (req.body.notCompleted) ? req.body.notCompleted : 0;
-	const blocked = (req.body.blocked) ? req.body.blocked : 0;
-	const noRun = (req.body.noRun) ? req.body.noRun : 0;
+    /**
+     * Prepare Time KPIs
+     */
+    const cycle = await Cycle.findById(req.body.cycle._id);
+    const timeElapsedRatio = kpi.getTimeElapsed(
+        cycle.startDate,
+        cycle.endDate,
+        req.body.reportingDate || null
+    );
+    const timeAvailableRatio = kpi.getTimeAvailable(
+        cycle.startDate,
+        cycle.endDate,
+        req.body.reportingDate || null
+    );
 
-	const executed = passed + failed;
-	const unexecuted = notCompleted + blocked + noRun;
-	const sum = executed + unexecuted;
+    /**
+     * Add SUM
+     */
+    req.body.sum = kpi.getSum(req.body);
 
-	/**
-	 * Prepare Time KPIs
-	 */
-	const cycle = await Cycle.findById(req.body.cycle._id);
-	const current = (req.body.reportingDate) ? new moment(req.body.reportingDate) : new moment();
-	const start = new moment(cycle.startDate);
-	const end = new moment(cycle.endDate);
-	const cycleDuration = moment.duration(start.diff(end));
-	const elapsedDuration = (start < current) ? moment.duration(start.diff(current)) : 0;
-	const availableDuration = (current < end) ? moment.duration(current.diff(end)) : 0;
+    /**
+     * Add other KPIs
+     */
+    const kpis = {
+        executionRatio: kpi.getExecutionRatio(req.body),
+        passedRatio: kpi.getPassedRatio(req.body),
+        failedRatio: kpi.getFailedRatio(req.body),
+        blockedRatio: kpi.getBlockedRatio(req.body),
+        timeElapsedRatio: timeElapsedRatio,
+        timeAvailableRatio: timeAvailableRatio
+    };
+    req.body.KPIs = kpis;
 
-	/**
-	 * Add SUM
-	 */
-	req.body.sum = sum;
-
-	/**
-	 * Add other KPIs
-	 */
-	const kpis = {
-		executionRatio: (sum !== 0 ) ? (executed / sum).toFixed(2) : 0,
-		passedRatio: (executed !== 0) ? (passed / executed).toFixed(2) : 0,
-		failedRatio: (executed !== 0) ? (failed / executed).toFixed(2) : 0,
-		blockedRatio: (sum !== 0) ? (blocked / sum).toFixed(2) : 0,
-		timeElapsedRatio: (cycleDuration !== 0) ? (elapsedDuration / cycleDuration).toFixed(2) : 0,
-		timeAvailableRatio: (cycleDuration !== 0) ? (availableDuration / cycleDuration).toFixed(2) : 0
-	};
-	req.body.KPIs = kpis;
-
-	next();
+    next();
 };
