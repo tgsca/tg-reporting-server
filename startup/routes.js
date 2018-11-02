@@ -7,6 +7,7 @@ const cycles = require('../routes/cycles');
 const results = require('../routes/results');
 const milestones = require('../routes/milestones');
 const coverages = require('../routes/coverages');
+const defects = require('../routes/defects');
 
 module.exports = function(app) {
     app.use(express.json());
@@ -17,5 +18,6 @@ module.exports = function(app) {
     app.use('/api/results', results);
     app.use('/api/milestones', milestones);
     app.use('/api/coverages', coverages);
+    app.use('/api/defects', defects);
     app.use(error);
 };
