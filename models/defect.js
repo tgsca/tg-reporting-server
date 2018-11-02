@@ -6,7 +6,7 @@ const prioSchema = new mongoose.Schema({
     high: { type: Number, default: 0 },
     medium: { type: Number, default: 0 },
     low: { type: Number, default: 0 },
-    woPrio: { type: Number, default: 0 },
+    unrated: { type: Number, default: 0 },
     sum: { type: Number, default: 0 }
 });
 
@@ -64,7 +64,7 @@ function validateDefect(defect) {
         high: Joi.number().min(0),
         medium: Joi.number().min(0),
         low: Joi.number().min(0),
-        woPrio: Joi.number().min(0)
+        unrated: Joi.number().min(0)
     });
 
     const schema = {
