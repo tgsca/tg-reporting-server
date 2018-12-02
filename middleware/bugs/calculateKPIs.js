@@ -1,19 +1,12 @@
-const kpi = require('../../services/kpiService');
+const kpi = require('../../services/bugKpiService');
 
 module.exports = async (req, res, next) => {
     /**
      * Add SUM
      */
-    const {
-        new: n,
-        inClarification,
-        inImplementation,
-        inInstallation,
-        inRetest,
-        closed,
-        rejected,
-        sum
-    } = kpi.getCalculatedDefectBody(req.body);
+    const { new: n, inClarification, inImplementation, inInstallation, inRetest, closed, rejected, sum } = kpi.getCalculatedBugBody(
+        req.body
+    );
     req.body.new = { ...n };
     req.body.inClarification = { ...inClarification };
     req.body.inImplementation = { ...inImplementation };

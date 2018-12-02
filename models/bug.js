@@ -10,7 +10,7 @@ const prioSchema = new mongoose.Schema({
     sum: { type: Number, default: 0 }
 });
 
-const defectSchema = new mongoose.Schema({
+const bugSchema = new mongoose.Schema({
     project: {
         type: new mongoose.Schema({
             name: {
@@ -56,9 +56,9 @@ const defectSchema = new mongoose.Schema({
     }
 });
 
-const Defect = mongoose.model('Defect', defectSchema);
+const Bug = mongoose.model('Bug', bugSchema);
 
-function validateDefect(defect) {
+function validateBug(bug) {
     const statusSchema = Joi.object({
         urgent: Joi.number().min(0),
         high: Joi.number().min(0),
@@ -79,8 +79,8 @@ function validateDefect(defect) {
         rejected: statusSchema
     };
 
-    return Joi.validate(defect, schema);
+    return Joi.validate(bug, schema);
 }
 
-exports.Defect = Defect;
-exports.validateDefect = validateDefect;
+exports.Bug = Bug;
+exports.validateBug = validateBug;

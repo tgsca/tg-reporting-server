@@ -1,5 +1,5 @@
 const { Cycle } = require('../../models/cycle');
-const kpi = require('../../services/kpiService');
+const kpi = require('../../services/coverageKpiService');
 const moment = require('moment');
 
 module.exports = async (req, res, next) => {

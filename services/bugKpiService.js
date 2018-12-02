@@ -1,119 +1,4 @@
-const moment = require('moment');
-
-/**
- * GENERAL TIME KPI Functions
- * @param {*} startDate
- * @param {*} endDate
- * @param {*} currentDate
- */
-
-function getTimeElapsed(startDate, endDate, currentDate) {
-    const current = new moment(currentDate);
-    const start = new moment(startDate);
-    const end = new moment(endDate);
-
-    const cycleDuration = moment.duration(start.diff(end));
-    const elapsedDuration = start < current ? moment.duration(start.diff(current)) : 0;
-
-    return cycleDuration !== 0 ? (elapsedDuration / cycleDuration).toFixed(2) : 0;
-}
-
-function getTimeAvailable(startDate, endDate, currentDate) {
-    const current = new moment(currentDate);
-    const start = new moment(startDate);
-    const end = new moment(endDate);
-
-    const cycleDuration = moment.duration(start.diff(end));
-    const availableDuration = current < end ? moment.duration(current.diff(end)) : 0;
-
-    return cycleDuration !== 0 ? (availableDuration / cycleDuration).toFixed(2) : 0;
-}
-
-/**
- * RESULT KPI Functions
- * @param {*} input
- */
-
-function getResultCalculationBasis(input = {}) {
-    const basis = {};
-
-    basis['passed'] = input.passed ? input.passed : 0;
-    basis['failed'] = input.failed ? input.failed : 0;
-    basis['notCompleted'] = input.notCompleted ? input.notCompleted : 0;
-    basis['blocked'] = input.blocked ? input.blocked : 0;
-    basis['noRun'] = input.noRun ? input.noRun : 0;
-
-    basis['executed'] = basis.passed + basis.failed;
-    basis['unexecuted'] = basis.notCompleted + basis.blocked + basis.noRun;
-    basis['sum'] = basis.executed + basis.unexecuted;
-
-    return basis;
-}
-
-function getExecutionRatio(input = {}) {
-    const { sum, executed } = getResultCalculationBasis(input);
-    return sum !== 0 ? (executed / sum).toFixed(2) : 0;
-}
-
-function getPassedRatio(input = {}) {
-    const { executed, passed } = getResultCalculationBasis(input);
-    return executed !== 0 ? (passed / executed).toFixed(2) : 0;
-}
-
-function getFailedRatio(input = {}) {
-    const { executed, failed } = getResultCalculationBasis(input);
-    return executed !== 0 ? (failed / executed).toFixed(2) : 0;
-}
-
-function getBlockedRatio(input = {}) {
-    const { sum, blocked } = getResultCalculationBasis(input);
-    return sum !== 0 ? (blocked / sum).toFixed(2) : 0;
-}
-
-function getResultSum(input = {}) {
-    const { sum } = getResultCalculationBasis(input);
-    return sum;
-}
-
-/**
- * COVERAGE KPI Functions
- * @param {*} input
- */
-
-function getCoverageCalculationBasis(input = {}) {
-    const basis = {};
-
-    basis['covered'] = input.covered ? input.covered : 0;
-    basis['onHold'] = input.onHold ? input.onHold : 0;
-    basis['inProgress'] = input.inProgress ? input.inProgress : 0;
-    basis['open'] = input.open ? input.open : 0;
-
-    basis['sum'] = basis.covered + basis.onHold + basis.inProgress + basis.open;
-
-    return basis;
-}
-
-function getCoverageRatio(input = {}) {
-    const { covered, sum } = getCoverageCalculationBasis(input);
-    return sum !== 0 ? (covered / sum).toFixed(2) : 0;
-}
-
-function getOnHoldRatio(input = {}) {
-    const { onHold, covered, sum } = getCoverageCalculationBasis(input);
-    return sum > covered ? (onHold / (sum - covered)).toFixed(2) : 0;
-}
-
-function getCoverageSum(input = {}) {
-    const { sum } = getCoverageCalculationBasis(input);
-    return sum;
-}
-
-/**
- * DEFECT KPI Functions
- * @param {*} input
- */
-
-function getDefectCalculationBasis(input = {}) {
+function getBugCalculationBasis(input = {}) {
     const basis = {
         closed: {},
         inRetest: {},
@@ -131,8 +16,7 @@ function getDefectCalculationBasis(input = {}) {
     basis['closed']['medium'] = c.medium ? c.medium : 0;
     basis['closed']['low'] = c.low ? c.low : 0;
     basis['closed']['unrated'] = c.unrated ? c.unrated : 0;
-    basis['closed']['sum'] =
-        basis.closed.urgent + basis.closed.high + basis.closed.medium + basis.closed.low + basis.closed.unrated;
+    basis['closed']['sum'] = basis.closed.urgent + basis.closed.high + basis.closed.medium + basis.closed.low + basis.closed.unrated;
 
     const { inRetest: iR } = input;
     basis['inRetest']['urgent'] = iR.urgent ? iR.urgent : 0;
@@ -141,11 +25,7 @@ function getDefectCalculationBasis(input = {}) {
     basis['inRetest']['low'] = iR.low ? iR.low : 0;
     basis['inRetest']['unrated'] = iR.unrated ? iR.unrated : 0;
     basis['inRetest']['sum'] =
-        basis.inRetest.urgent +
-        basis.inRetest.high +
-        basis.inRetest.medium +
-        basis.inRetest.low +
-        basis.inRetest.unrated;
+        basis.inRetest.urgent + basis.inRetest.high + basis.inRetest.medium + basis.inRetest.low + basis.inRetest.unrated;
 
     const { inInstallation: iInst } = input;
     basis['inInstallation']['urgent'] = iInst.urgent ? iInst.urgent : 0;
@@ -201,11 +81,7 @@ function getDefectCalculationBasis(input = {}) {
     basis['rejected']['low'] = rej.low ? rej.low : 0;
     basis['rejected']['unrated'] = rej.unrated ? rej.unrated : 0;
     basis['rejected']['sum'] =
-        basis.rejected.urgent +
-        basis.rejected.high +
-        basis.rejected.medium +
-        basis.rejected.low +
-        basis.rejected.unrated;
+        basis.rejected.urgent + basis.rejected.high + basis.rejected.medium + basis.rejected.low + basis.rejected.unrated;
 
     basis['sum']['urgent'] =
         basis.closed.urgent +
@@ -253,41 +129,28 @@ function getDefectCalculationBasis(input = {}) {
 }
 
 function getFixedRatio(input = {}) {
-    const { closed, inRetest, inInstallation, sum } = getDefectCalculationBasis(input);
+    const { closed, inRetest, inInstallation, sum } = getBugCalculationBasis(input);
     const fixed = closed.sum + inRetest.sum + inInstallation.sum;
 
     return sum.sum !== 0 ? (fixed / sum.sum).toFixed(2) : 0;
 }
 
 function getRejectedRatio(input = {}) {
-    const { rejected, sum } = getDefectCalculationBasis(input);
+    const { rejected, sum } = getBugCalculationBasis(input);
 
     return sum.sum !== 0 ? (rejected.sum / sum.sum).toFixed(2) : 0;
 }
 
 function getDefectSum(input = {}) {
-    const { sum } = getDefectCalculationBasis(input);
+    const { sum } = getBugCalculationBasis(input);
     return sum;
 }
 
-function getCalculatedDefectBody(input = {}) {
-    return getDefectCalculationBasis(input);
+function getCalculatedBugBody(input = {}) {
+    return getBugCalculationBasis(input);
 }
-
-exports.getTimeElapsed = getTimeElapsed;
-exports.getTimeAvailable = getTimeAvailable;
-
-exports.getExecutionRatio = getExecutionRatio;
-exports.getPassedRatio = getPassedRatio;
-exports.getFailedRatio = getFailedRatio;
-exports.getBlockedRatio = getBlockedRatio;
-exports.getResultSum = getResultSum;
-
-exports.getCoverageRatio = getCoverageRatio;
-exports.getOnHoldRatio = getOnHoldRatio;
-exports.getCoverageSum = getCoverageSum;
 
 exports.getFixedRatio = getFixedRatio;
 exports.getRejectedRatio = getRejectedRatio;
 exports.getDefectSum = getDefectSum;
-exports.getCalculatedDefectBody = getCalculatedDefectBody;
+exports.getCalculatedBugBody = getCalculatedBugBody;
