@@ -1,4 +1,4 @@
-function getBugCalculationBasis(input = {}) {
+function getBasicData(input = {}) {
     const basis = {
         closed: {},
         inRetest: {},
@@ -7,7 +7,9 @@ function getBugCalculationBasis(input = {}) {
         inClarification: {},
         new: {},
         rejected: {},
-        sum: {}
+        open: {},
+        fixed: {},
+        totalCount: {}
     };
 
     const { closed: c } = input;
@@ -83,7 +85,38 @@ function getBugCalculationBasis(input = {}) {
     basis['rejected']['sum'] =
         basis.rejected.urgent + basis.rejected.high + basis.rejected.medium + basis.rejected.low + basis.rejected.unrated;
 
-    basis['sum']['urgent'] =
+    basis['open']['urgent'] =
+        basis.inRetest.urgent +
+        basis.inInstallation.urgent +
+        basis.inImplementation.urgent +
+        basis.inClarification.urgent +
+        basis.new.urgent;
+    basis['open']['high'] =
+        basis.inRetest.high + basis.inInstallation.high + basis.inImplementation.high + basis.inClarification.high + basis.new.high;
+    basis['open']['medium'] =
+        basis.inRetest.medium +
+        basis.inInstallation.medium +
+        basis.inImplementation.medium +
+        basis.inClarification.medium +
+        basis.new.medium;
+    basis['open']['low'] =
+        basis.inRetest.low + basis.inInstallation.low + basis.inImplementation.low + basis.inClarification.low + basis.new.low;
+    basis['open']['unrated'] =
+        basis.inRetest.unrated +
+        basis.inInstallation.unrated +
+        basis.inImplementation.unrated +
+        basis.inClarification.unrated +
+        basis.new.unrated;
+    basis['open']['sum'] = basis.open.urgent + basis.open.high + basis.open.medium + basis.open.low + basis.open.unrated;
+
+    basis['fixed']['urgent'] = basis.closed.urgent + basis.inRetest.urgent + basis.inInstallation.urgent;
+    basis['fixed']['high'] = basis.closed.high + basis.inRetest.high + basis.inInstallation.high;
+    basis['fixed']['medium'] = basis.closed.medium + basis.inRetest.medium + basis.inInstallation.medium;
+    basis['fixed']['low'] = basis.closed.low + basis.inRetest.low + basis.inInstallation.low;
+    basis['fixed']['unrated'] = basis.closed.unrated + basis.inRetest.unrated + basis.inInstallation.unrated;
+    basis['fixed']['sum'] = basis.fixed.urgent + basis.fixed.high + basis.fixed.medium + basis.fixed.low + basis.fixed.unrated;
+
+    basis['totalCount']['urgent'] =
         basis.closed.urgent +
         basis.inRetest.urgent +
         basis.inInstallation.urgent +
@@ -91,7 +124,7 @@ function getBugCalculationBasis(input = {}) {
         basis.inClarification.urgent +
         basis.new.urgent +
         basis.rejected.urgent;
-    basis['sum']['high'] =
+    basis['totalCount']['high'] =
         basis.closed.high +
         basis.inRetest.high +
         basis.inInstallation.high +
@@ -99,7 +132,7 @@ function getBugCalculationBasis(input = {}) {
         basis.inClarification.high +
         basis.new.high +
         basis.rejected.high;
-    basis['sum']['medium'] =
+    basis['totalCount']['medium'] =
         basis.closed.medium +
         basis.inRetest.medium +
         basis.inInstallation.medium +
@@ -107,7 +140,7 @@ function getBugCalculationBasis(input = {}) {
         basis.inClarification.medium +
         basis.new.medium +
         basis.rejected.medium;
-    basis['sum']['low'] =
+    basis['totalCount']['low'] =
         basis.closed.low +
         basis.inRetest.low +
         basis.inInstallation.low +
@@ -115,7 +148,7 @@ function getBugCalculationBasis(input = {}) {
         basis.inClarification.low +
         basis.new.low +
         basis.rejected.low;
-    basis['sum']['unrated'] =
+    basis['totalCount']['unrated'] =
         basis.closed.unrated +
         basis.inRetest.unrated +
         basis.inInstallation.unrated +
@@ -123,34 +156,96 @@ function getBugCalculationBasis(input = {}) {
         basis.inClarification.unrated +
         basis.new.unrated +
         basis.rejected.unrated;
-    basis['sum']['sum'] = basis.sum.urgent + basis.sum.high + basis.sum.medium + basis.sum.low + basis.sum.unrated;
+    basis['totalCount']['sum'] =
+        basis.totalCount.urgent + basis.totalCount.high + basis.totalCount.medium + basis.totalCount.low + basis.totalCount.unrated;
 
     return basis;
 }
 
-function getFixedRatio(input = {}) {
-    const { closed, inRetest, inInstallation, sum } = getBugCalculationBasis(input);
-    const fixed = closed.sum + inRetest.sum + inInstallation.sum;
+const f = 5;
 
-    return sum.sum !== 0 ? (fixed / sum.sum).toFixed(2) : 0;
+function getOpenRatio(input = {}) {
+    const { totalCount, open } = getBasicData(input);
+    return totalCount.sum !== 0 ? Number((open.sum / totalCount.sum).toFixed(f)) : 0;
+}
+
+function getNewRatioRel(input = {}) {
+    const { new: n, open } = getBasicData(input);
+    return open.sum !== 0 ? Number((n.sum / open.sum).toFixed(f)) : 0;
+}
+
+function getNewRatioAbs(input = {}) {
+    const { new: n, totalCount } = getBasicData(input);
+    return totalCount.sum !== 0 ? Number((n.sum / totalCount.sum).toFixed(f)) : 0;
+}
+
+function getInClarificationRatioRel(input = {}) {
+    const { inClarification, open } = getBasicData(input);
+    return open.sum !== 0 ? Number((inClarification.sum / open.sum).toFixed(f)) : 0;
+}
+
+function getInClarificationRatioAbs(input = {}) {
+    const { inClarification, totalCount } = getBasicData(input);
+    return totalCount.sum !== 0 ? Number((inClarification.sum / totalCount.sum).toFixed(f)) : 0;
+}
+
+function getInImplementationRatioRel(input = {}) {
+    const { inImplementation, open } = getBasicData(input);
+    return open.sum !== 0 ? Number((inImplementation.sum / open.sum).toFixed(f)) : 0;
+}
+
+function getInImplementationRatioAbs(input = {}) {
+    const { inImplementation, totalCount } = getBasicData(input);
+    return totalCount.sum !== 0 ? Number((inImplementation.sum / totalCount.sum).toFixed(f)) : 0;
+}
+
+function getInInstallationRatioRel(input = {}) {
+    const { inInstallation, open } = getBasicData(input);
+    return open.sum !== 0 ? Number((inInstallation.sum / open.sum).toFixed(f)) : 0;
+}
+
+function getInInstallationRatioAbs(input = {}) {
+    const { inInstallation, totalCount } = getBasicData(input);
+    return totalCount.sum !== 0 ? Number((inInstallation.sum / totalCount.sum).toFixed(f)) : 0;
+}
+
+function getInRetestRatioRel(input = {}) {
+    const { inRetest, open } = getBasicData(input);
+    return open.sum !== 0 ? Number((inRetest.sum / open.sum).toFixed(f)) : 0;
+}
+
+function getInRetestRatioAbs(input = {}) {
+    const { inRetest, totalCount } = getBasicData(input);
+    return totalCount.sum !== 0 ? Number((inRetest.sum / totalCount.sum).toFixed(f)) : 0;
+}
+
+function getFixedRatio(input = {}) {
+    const { fixed, totalCount } = getBasicData(input);
+    return totalCount.sum !== 0 ? Number((fixed.sum / totalCount.sum).toFixed(f)) : 0;
+}
+
+function getClosedRatio(input = {}) {
+    const { closed, totalCount } = getBasicData(input);
+    return totalCount.sum !== 0 ? Number((closed.sum / totalCount.sum).toFixed(f)) : 0;
 }
 
 function getRejectedRatio(input = {}) {
-    const { rejected, sum } = getBugCalculationBasis(input);
-
-    return sum.sum !== 0 ? (rejected.sum / sum.sum).toFixed(2) : 0;
+    const { rejected, totalCount } = getBasicData(input);
+    return totalCount.sum !== 0 ? Number((rejected.sum / totalCount.sum).toFixed(f)) : 0;
 }
 
-function getDefectSum(input = {}) {
-    const { sum } = getBugCalculationBasis(input);
-    return sum;
-}
-
-function getCalculatedBugBody(input = {}) {
-    return getBugCalculationBasis(input);
-}
-
+exports.getBasicData = getBasicData;
+exports.getOpenRatio = getOpenRatio;
+exports.getNewRatioRel = getNewRatioRel;
+exports.getNewRatioAbs = getNewRatioAbs;
+exports.getInClarificationRatioRel = getInClarificationRatioRel;
+exports.getInClarificationRatioAbs = getInClarificationRatioAbs;
+exports.getInImplementationRatioRel = getInImplementationRatioRel;
+exports.getInImplementationRatioAbs = getInImplementationRatioAbs;
+exports.getInInstallationRatioRel = getInInstallationRatioRel;
+exports.getInInstallationRatioAbs = getInInstallationRatioAbs;
+exports.getInRetestRatioRel = getInRetestRatioRel;
+exports.getInRetestRatioAbs = getInRetestRatioAbs;
 exports.getFixedRatio = getFixedRatio;
+exports.getClosedRatio = getClosedRatio;
 exports.getRejectedRatio = getRejectedRatio;
-exports.getDefectSum = getDefectSum;
-exports.getCalculatedBugBody = getCalculatedBugBody;

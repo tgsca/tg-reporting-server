@@ -1,6 +1,5 @@
 const moment = require('moment');
 const { Result } = require('../../models/result');
-const kpi = require('../../services/kpiService');
 
 module.exports = async (req, res, next) => {
     if (req.params.id) {
@@ -8,16 +7,16 @@ module.exports = async (req, res, next) => {
 
         query.exec(function(err, results) {
             for (let result of results) {
-                const timeElapsedRatio = kpi.getTimeElapsed(
-                    req.body.startDate,
-                    req.body.endDate,
-                    result.reportingDate
-                );
-                const timeAvailableRatio = kpi.getTimeAvailable(
-                    req.body.startDate,
-                    req.body.endDate,
-                    result.reportingDate
-                );
+                const current = new moment(req.body.reportingDate);
+                const start = new moment(cycle.startDate);
+                const end = new moment(cycle.endDate);
+
+                const cycleDuration = moment.duration(start.diff(end));
+                const elapsedDuration = start < current ? moment.duration(start.diff(current)) : 0;
+                const availableDuration = current < end ? moment.duration(current.diff(end)) : 0;
+
+                const timeElapsedRatio = cycleDuration !== 0 ? (elapsedDuration / cycleDuration).toFixed(2) : 0;
+                const timeAvailableRatio = cycleDuration !== 0 ? (availableDuration / cycleDuration).toFixed(2) : 0;
 
                 result.KPIs['timeElapsedRatio'] = timeElapsedRatio;
                 result.KPIs['timeAvailableRatio'] = timeAvailableRatio;

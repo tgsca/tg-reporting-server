@@ -19,12 +19,6 @@ router.get('/:id', validateObjectId, async (req, res) => {
     res.send(bug);
 });
 
-router.get('/kpis', validateObjectId, async (req, res) => {
-    const bugs = await Bug.find(req.query);
-    const kpis = [];
-    res.send(kpis);
-});
-
 router.post('/', [auth, validate(validateBug), addMetainfos, calculateKPIs], async (req, res) => {
     const bug = new Bug(req.body);
     bug.save();
