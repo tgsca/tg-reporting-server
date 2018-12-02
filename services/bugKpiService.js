@@ -162,76 +162,76 @@ function getBasicData(input = {}) {
     return basis;
 }
 
-const f = 5;
+const f = 3;
 
 function getOpenRatio(input = {}) {
     const { totalCount, open } = getBasicData(input);
-    return totalCount.sum !== 0 ? Number((open.sum / totalCount.sum).toFixed(f)) : 0;
+    return totalCount.sum !== 0 ? Number(((open.sum / totalCount.sum) * 100).toFixed(f)) : 0;
 }
 
 function getNewRatioRel(input = {}) {
     const { new: n, open } = getBasicData(input);
-    return open.sum !== 0 ? Number((n.sum / open.sum).toFixed(f)) : 0;
+    return open.sum !== 0 ? Number(((n.sum / open.sum) * 100).toFixed(f)) : 0;
 }
 
 function getNewRatioAbs(input = {}) {
     const { new: n, totalCount } = getBasicData(input);
-    return totalCount.sum !== 0 ? Number((n.sum / totalCount.sum).toFixed(f)) : 0;
+    return totalCount.sum !== 0 ? Number(((n.sum / totalCount.sum) * 100).toFixed(f)) : 0;
 }
 
 function getInClarificationRatioRel(input = {}) {
     const { inClarification, open } = getBasicData(input);
-    return open.sum !== 0 ? Number((inClarification.sum / open.sum).toFixed(f)) : 0;
+    return open.sum !== 0 ? Number(((inClarification.sum / open.sum) * 100).toFixed(f)) : 0;
 }
 
 function getInClarificationRatioAbs(input = {}) {
     const { inClarification, totalCount } = getBasicData(input);
-    return totalCount.sum !== 0 ? Number((inClarification.sum / totalCount.sum).toFixed(f)) : 0;
+    return totalCount.sum !== 0 ? Number(((inClarification.sum / totalCount.sum) * 100).toFixed(f)) : 0;
 }
 
 function getInImplementationRatioRel(input = {}) {
     const { inImplementation, open } = getBasicData(input);
-    return open.sum !== 0 ? Number((inImplementation.sum / open.sum).toFixed(f)) : 0;
+    return open.sum !== 0 ? Number(((inImplementation.sum / open.sum) * 100).toFixed(f)) : 0;
 }
 
 function getInImplementationRatioAbs(input = {}) {
     const { inImplementation, totalCount } = getBasicData(input);
-    return totalCount.sum !== 0 ? Number((inImplementation.sum / totalCount.sum).toFixed(f)) : 0;
+    return totalCount.sum !== 0 ? Number(((inImplementation.sum / totalCount.sum) * 100).toFixed(f)) : 0;
 }
 
 function getInInstallationRatioRel(input = {}) {
     const { inInstallation, open } = getBasicData(input);
-    return open.sum !== 0 ? Number((inInstallation.sum / open.sum).toFixed(f)) : 0;
+    return open.sum !== 0 ? Number(((inInstallation.sum / open.sum) * 100).toFixed(f)) : 0;
 }
 
 function getInInstallationRatioAbs(input = {}) {
     const { inInstallation, totalCount } = getBasicData(input);
-    return totalCount.sum !== 0 ? Number((inInstallation.sum / totalCount.sum).toFixed(f)) : 0;
+    return totalCount.sum !== 0 ? Number(((inInstallation.sum / totalCount.sum) * 100).toFixed(f)) : 0;
 }
 
 function getInRetestRatioRel(input = {}) {
     const { inRetest, open } = getBasicData(input);
-    return open.sum !== 0 ? Number((inRetest.sum / open.sum).toFixed(f)) : 0;
+    return open.sum !== 0 ? Number(((inRetest.sum / open.sum) * 100).toFixed(f)) : 0;
 }
 
 function getInRetestRatioAbs(input = {}) {
     const { inRetest, totalCount } = getBasicData(input);
-    return totalCount.sum !== 0 ? Number((inRetest.sum / totalCount.sum).toFixed(f)) : 0;
+    return totalCount.sum !== 0 ? Number(((inRetest.sum / totalCount.sum) * 100).toFixed(f)) : 0;
 }
 
 function getFixedRatio(input = {}) {
     const { fixed, totalCount } = getBasicData(input);
-    return totalCount.sum !== 0 ? Number((fixed.sum / totalCount.sum).toFixed(f)) : 0;
+    return totalCount.sum !== 0 ? Number(((fixed.sum / totalCount.sum) * 100).toFixed(f)) : 0;
 }
 
 function getClosedRatio(input = {}) {
     const { closed, totalCount } = getBasicData(input);
-    return totalCount.sum !== 0 ? Number((closed.sum / totalCount.sum).toFixed(f)) : 0;
+    return totalCount.sum !== 0 ? Number(((closed.sum / totalCount.sum) * 100).toFixed(f)) : 0;
 }
 
 function getRejectedRatio(input = {}) {
     const { rejected, totalCount } = getBasicData(input);
-    return totalCount.sum !== 0 ? Number((rejected.sum / totalCount.sum).toFixed(f)) : 0;
+    return totalCount.sum !== 0 ? Number(((rejected.sum / totalCount.sum) * 100).toFixed(f)) : 0;
 }
 
 exports.getBasicData = getBasicData;

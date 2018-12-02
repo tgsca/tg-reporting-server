@@ -8,7 +8,7 @@ const calculateKPIs = require('../middleware/results/calculateKPIs');
 const addMetainfos = require('../middleware/results/addMetainfos');
 
 router.get('/', async (req, res) => {
-    const results = await Result.find(req.query);
+    const results = await Result.find(req.query).sort('reportingDate');
     res.send(results);
 });
 
@@ -26,18 +26,14 @@ router.get('/:id', validateObjectId, async (req, res) => {
     res.send(result);
 });
 
-router.put(
-    '/:id',
-    [auth, validateObjectId, validate(validateResult), addMetainfos, calculateKPIs],
-    async (req, res) => {
-        const result = await Result.findByIdAndUpdate(req.params.id, req.body, {
-            new: true
-        });
-        if (!result) return res.status(404).send(`Result with given ID ${req.params.id} could not be found.`);
+router.put('/:id', [auth, validateObjectId, validate(validateResult), addMetainfos, calculateKPIs], async (req, res) => {
+    const result = await Result.findByIdAndUpdate(req.params.id, req.body, {
+        new: true
+    });
+    if (!result) return res.status(404).send(`Result with given ID ${req.params.id} could not be found.`);
 
-        res.send(result);
-    }
-);
+    res.send(result);
+});
 
 router.delete('/:id', [auth, validateObjectId], async (req, res) => {
     const result = await Result.findByIdAndRemove(req.params.id);

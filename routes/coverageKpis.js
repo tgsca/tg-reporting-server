@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const moment = require('moment');
 const { Coverage } = require('../models/coverage');
 const coverageKpis = require('../services/coverageKpiService');
 const validateObjectId = require('../middleware/validateObjectId');
@@ -8,7 +9,7 @@ function getCoverageKpiResponse(coverage) {
     const { totalCount, covered, uncovered, blocked, inProgress, open } = coverageKpis.getBasicData(coverage);
     return {
         _id: coverage._id,
-        reportingDate: coverage.reportingDate,
+        reportingDate: moment(coverage.reportingDate).valueOf(),
         cycle: {
             _id: coverage.cycle._id,
             name: coverage.cycle.name,
@@ -35,7 +36,7 @@ function getCoverageKpiResponse(coverage) {
 }
 
 router.get('/', async (req, res) => {
-    const coverages = await Coverage.find(req.query);
+    const coverages = await Coverage.find(req.query).sort('reportingDate');
     const kpis = [];
     for (let coverage of coverages) {
         kpis.push(getCoverageKpiResponse(coverage));

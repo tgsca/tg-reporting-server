@@ -8,7 +8,7 @@ const calculateKPIs = require('../middleware/bugs/calculateKPIs');
 const addMetainfos = require('../middleware/bugs/addMetainfos');
 
 router.get('/', async (req, res) => {
-    const bugs = await Bug.find(req.query);
+    const bugs = await Bug.find(req.query).sort('reportingDate');
     res.send(bugs);
 });
 

@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const moment = require('moment');
 const { Result } = require('../models/result');
 const resultKpis = require('../services/resultKpiService');
 const validateObjectId = require('../middleware/validateObjectId');
@@ -8,7 +9,7 @@ function getResultKpiResponse(result) {
     const { totalCount, executed, unexecuted, passed, failed, blocked, notCompleted, noRun } = resultKpis.getBasicData(result);
     return {
         _id: result._id,
-        reportingDate: result.reportingDate,
+        reportingDate: moment(result.reportingDate).valueOf(),
         cycle: {
             _id: result.cycle._id,
             name: result.cycle.name,
@@ -41,7 +42,7 @@ function getResultKpiResponse(result) {
 }
 
 router.get('/', async (req, res) => {
-    const results = await Result.find(req.query);
+    const results = await Result.find(req.query).sort('reportingDate');
     const kpis = [];
     for (let result of results) {
         kpis.push(getResultKpiResponse(result));

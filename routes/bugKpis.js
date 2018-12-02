@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const moment = require('moment');
 const { Bug } = require('../models/bug');
 const bugKpis = require('../services/bugKpiService');
 const validateObjectId = require('../middleware/validateObjectId');
@@ -19,7 +20,7 @@ function getBugKpiResponse(bug) {
     } = bugKpis.getBasicData(bug);
     return {
         _id: bug._id,
-        reportingDate: bug.reportingDate,
+        reportingDate: moment(bug.reportingDate).valueOf(),
         project: { _id: bug.project._id, name: bug.project.name },
         totalCount: totalCount.sum,
         open: open.sum,
@@ -49,7 +50,7 @@ function getBugKpiResponse(bug) {
 }
 
 router.get('/', async (req, res) => {
-    const bugs = await Bug.find(req.query);
+    const bugs = await Bug.find(req.query).sort('reportingDate');
     const kpis = [];
     for (let bug of bugs) {
         kpis.push(getBugKpiResponse(bug));

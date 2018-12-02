@@ -8,7 +8,7 @@ const calculateKPIs = require('../middleware/coverages/calculateKPIs');
 const addMetainfos = require('../middleware/coverages/addMetainfos');
 
 router.get('/', async (req, res) => {
-    const coverages = await Coverage.find(req.query);
+    const coverages = await Coverage.find(req.query).sort('reportingDate');
     res.send(coverages);
 });
 
@@ -26,18 +26,14 @@ router.get('/:id', validateObjectId, async (req, res) => {
     res.send(coverage);
 });
 
-router.put(
-    '/:id',
-    [auth, validateObjectId, validate(validateCoverage), addMetainfos, calculateKPIs],
-    async (req, res) => {
-        const coverage = await Coverage.findByIdAndUpdate(req.params.id, req.body, {
-            new: true
-        });
-        if (!coverage) return res.status(404).send(`Coverage with given ID ${req.params.id} could not be found.`);
+router.put('/:id', [auth, validateObjectId, validate(validateCoverage), addMetainfos, calculateKPIs], async (req, res) => {
+    const coverage = await Coverage.findByIdAndUpdate(req.params.id, req.body, {
+        new: true
+    });
+    if (!coverage) return res.status(404).send(`Coverage with given ID ${req.params.id} could not be found.`);
 
-        res.send(coverage);
-    }
-);
+    res.send(coverage);
+});
 
 router.delete('/:id', [auth, validateObjectId], async (req, res) => {
     const coverage = await Coverage.findByIdAndRemove(req.params.id);
