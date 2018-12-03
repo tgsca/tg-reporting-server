@@ -22,16 +22,13 @@ module.exports = async (req, res, next) => {
     /**
      * Add SUM
      */
-    req.body.sum = kpi.getResultSum(req.body);
+    const { totalCount } = kpi.getBasicData(req.body);
+    req.body.sum = totalCount;
 
     /**
      * Add other KPIs
      */
     const kpis = {
-        executionRatio: kpi.getExecutionRatio(req.body),
-        passedRatio: kpi.getPassedRatio(req.body),
-        failedRatio: kpi.getFailedRatio(req.body),
-        blockedRatio: kpi.getBlockedRatio(req.body),
         timeElapsedRatio: timeElapsedRatio,
         timeAvailableRatio: timeAvailableRatio
     };

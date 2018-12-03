@@ -1,4 +1,4 @@
 {
-	"jwtPrivateKey": "",
-	"db": "mongodb://localhost:27017/tgReportingServer"
+    "jwtPrivateKey": "",
+    "db": "mongodb://localhost:27017/tgReportingServer"
 }
